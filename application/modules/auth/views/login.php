@@ -273,7 +273,20 @@
 								</div>
 							</div>
 						</div>
-						
+						<div class="input-group ">
+						<div class="row" >
+							<input type="text" value="<?php echo rand(0,99); ?>" name="inp1" readonly style="width:30%; background-color:black; color:white; text-align: center;">&nbsp&nbsp
+							<i class="fa fa-plus" style="font-size: 28px; color: red;"></i>
+
+							<input type="text" value="<?php echo rand(0,99); ?>" name="inp2" readonly style="width:30%; background-color:black; color:white; text-align: center;">&nbsp&nbsp
+							<i class="fa fa-refresh" onClick="refreshPage()" style="font-size: 28px; color: red;"></i>
+						</div>
+								</div>
+						<div class="input-group ">
+						<div class="row">
+							<input type="text" class="form-control" name="ans" placeholder="Enter answer">
+						</div>
+						</div>
 						<button class="btn-link-dark  center-block" type="submit" name="create"><?php echo get_languageword('Create an Account');?></button>
 					</form>
 				</div>
@@ -285,6 +298,13 @@
 <!-- Login/Register Panel -->
 
 <script src="<?php echo URL_FRONT_JS;?>jquery.js"></script>
+<script>
+    function refreshPage() {
+        // What do I put here?
+		window.location.reload();
+
+    } 
+</script>
 <script>
 $(function () {
 	toggle_name();

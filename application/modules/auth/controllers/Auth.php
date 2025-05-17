@@ -907,54 +907,67 @@ class Auth extends MY_Controller {
 				
 				$group = array($user_belongs_group);
 				
+
+				$inp1=$this->input->post('inp1');
+				$inp2=$this->input->post('inp2');
+				$aanswer=$inp1+$inp2;
+				$ans=$this->input->post('ans');
+				if($ans==$aanswer)
+				{
 				// print_r($additional_data);
 				// echo("<pre>");
-				$id = $this->ion_auth->register($identity, $password, $email, $additional_data,$group);
+					$id = $this->ion_auth->register($identity, $password, $email, $additional_data,$group);
 				        // echo("in Auth Controller");
 				        // print_r($id);
                 // 		exit;   
-				if ($id)
-				{			
+					if ($id)
+					{			
 
-					//05-12-2018 admin_notification_start
-					$type = get_languageword('student');
-					$content=get_languageword("new_student_registered");
-					$link = SITEURL.'auth/index/2/read/'.$id;
-					if ($user_belongs_group==3) {
-					    $type = get_languageword('tutor');
-						$content=get_languageword("new_tutor_registered");
-						$link = SITEURL.'auth/index/3/read/'.$id;
+						//05-12-2018 admin_notification_start
+						$type = get_languageword('student');
+						$content=get_languageword("new_student_registered");
+						$link = SITEURL.'auth/index/2/read/'.$id;
+						if ($user_belongs_group==3) {
+							$type = get_languageword('tutor');
+							$content=get_languageword("new_tutor_registered");
+							$link = SITEURL.'auth/index/3/read/'.$id;
+						}
+						elseif ($user_belongs_group==4) {
+							$type = get_languageword('institute');
+							$content=get_languageword("new_institute_registered");
+							$link = SITEURL.'auth/index/4/read/'.$id;
+						}
+
+						
+						$data = array();
+						$data['user_id'] 	= $id;
+						$data['title'] 		= get_languageword('new_user_registered');
+						$data['content'] 	= $content;
+						$data['datetime']   = date('Y-m-d H:i:s');
+						$data['admin_read'] = 0;
+						$data['page_link']  = $link;
+						$data['table_name'] = "users";
+						$data['primary_key_column'] = "id";
+						$data['primary_key_value']  = $id;
+
+						// print_r($data);
+						$this->base_model->insert_operation($data,'notifications');	
+						unset($data);
+						//05-12-2018 admin_notification_end
+
+						$this->prepare_flashmessage(get_languageword($this->ion_auth->messages()), 0);	
+						redirect(URL_AUTH_LOGIN);
 					}
-					elseif ($user_belongs_group==4) {
-					    $type = get_languageword('institute');
-						$content=get_languageword("new_institute_registered");
-						$link = SITEURL.'auth/index/4/read/'.$id;
+					else
+					{
+						$this->data['message_create'] = prepare_message($this->ion_auth->errors(), 1);	
 					}
-
-					
-					$data = array();
-					$data['user_id'] 	= $id;
-					$data['title'] 		= get_languageword('new_user_registered');
-					$data['content'] 	= $content;
-					$data['datetime']   = date('Y-m-d H:i:s');
-					$data['admin_read'] = 0;
-					$data['page_link']  = $link;
-					$data['table_name'] = "users";
-					$data['primary_key_column'] = "id";
-					$data['primary_key_value']  = $id;
-
-                    // print_r($data);
-					$this->base_model->insert_operation($data,'notifications');	
-					unset($data);
-					//05-12-2018 admin_notification_end
-
-					$this->prepare_flashmessage(get_languageword($this->ion_auth->messages()), 0);	
-					redirect(URL_AUTH_LOGIN);
 				}
-				else
-				{
-					$this->data['message_create'] = prepare_message($this->ion_auth->errors(), 1);	
+				else{
+					$this->data['message_create'] = 'Enter Valid Answer';
+
 				}
+
 			}
 			else
 			{
